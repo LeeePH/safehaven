@@ -48,14 +48,14 @@ function Dashboard() {
             </div>
 
             {/* Message For You Button */}
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <button
                 onClick={() => navigate('/flower')}
                 className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 text-lg sm:text-xl"
               >
                 Flowers for you 💕
               </button>
-            </div>
+            </div> */}
 
             {/* Decorative elements */}
             <div className="flex justify-center space-x-2 mt-8">
