@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 
 function Flower() {
   const [loaded, setLoaded] = useState(false)
@@ -11,6 +12,8 @@ function Flower() {
   const [showParagraph2, setShowParagraph2] = useState(false)
   const [showParagraph3, setShowParagraph3] = useState(false)
   const [showImages, setShowImages] = useState(false)
+  const location = useLocation()
+  const hasInitialized = useRef(false)
 
   // Message content
   const paragraph1 = "My dearest Yannie, I wanted to create something beautiful just for you. These flowers represent my feelings for you—pure, beautiful, and growing stronger every day. You mean everything to me, and I wanted to show you in a way that words alone cannot express."
@@ -18,12 +21,31 @@ function Flower() {
   const paragraph3 = "I know I've made mistakes, and I want you to know how truly sorry I am. I never meant to hurt you or cause you any pain. You deserve all the happiness in the world, and I'm sorry for any pain I've caused. I hope these flowers can convey what my words sometimes fail to express—my deep love and sincere apologies. With all my love, Lee 💕"
 
   useEffect(() => {
+    // Reset all state when component mounts or location changes
+    setLoaded(false)
+    setTitle('')
+    setShowMessage(false)
+    setParagraph1Text('')
+    setParagraph2Text('')
+    setParagraph3Text('')
+    setShowParagraph1(false)
+    setShowParagraph2(false)
+    setShowParagraph3(false)
+    setShowImages(false)
+    hasInitialized.current = false
+
     // Update page title
     document.title = 'FLOWERS'
 
-    // Start animations immediately - don't delay
-    setLoaded(true)
-    setTitle('')
+    // Force a small delay then start animations to ensure DOM is ready
+    const initTimer = setTimeout(() => {
+      setLoaded(true)
+      // Force reflow to restart animations
+      const flowerPage = document.querySelector('.flower-page')
+      if (flowerPage) {
+        void flowerPage.offsetWidth // Force reflow
+      }
+    }, 50)
 
     // Define typing functions inside useEffect to avoid closure issues
     const startTypingParagraph3 = () => {
@@ -110,14 +132,14 @@ function Flower() {
     }, 1000)
 
     return () => {
+      clearTimeout(initTimer)
       clearTimeout(titleTimer)
-      // Reset title when leaving
-      document.title = 'For my lovey'
+      // Don't reset title on cleanup - let it stay as FLOWERS
     }
-  }, [paragraph1, paragraph2, paragraph3])
+  }, [location.pathname, paragraph1, paragraph2, paragraph3])
 
   return (
-    <div className="flower-page">
+    <div className="flower-page" key={`flower-${location.pathname}`}>
       {/* Background */}
       <div className="night"></div>
 
